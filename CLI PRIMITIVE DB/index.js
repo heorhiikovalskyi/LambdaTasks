@@ -2,6 +2,22 @@ import inquirer from 'inquirer';
 import {GetUsers,
     SearchUser,
     AddUsers} from './DBfunctions.js'
+//if we upload file without enter in the end: 
+/*   import path from 'path';
+  import {writeFile, readFileSync} from 'fs';
+    import { fileURLToPath } from 'url';
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const DB = __dirname+"/DB.txt";
+    try{
+        const file = readFileSync(DB, "utf8")
+        if (file[file.length - 1] != '\n'){
+            writeFile(DB, '\n', {flag: 'a'})
+        }}
+        catch (err){
+            console.error(err);
+        }
+*/
 const questions = [
 {
     type: 'input',

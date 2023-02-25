@@ -1,0 +1,30 @@
+CREATE DATABASE CryptoRestAPI
+
+CREATE TABLE Cryptocurrency(
+id INT AUTO_INCREMENT PRIMARY KEY,
+symbol VARCHAR(255) NOT NULL,
+name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Market(
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE ExchangeRate(
+id INT AUTO_INCREMENT PRIMARY KEY,
+market INT,
+FOREIGN KEY (market) REFERENCES Market(id) ON DELETE SET NULL,
+cryptocurrency INT,
+FOREIGN KEY (cryptocurrency) REFERENCES Cryptocurrency(id) ON DELETE SET NULL,
+conversiontoUSD FLOAT NOT NULL,
+date DATETIME NOT NULL
+);
+
+alter table cryptocurrency add constraint symbol unique key(symbol);
+
+CREATE EVENT DeleteExchangeRates
+    ON SCHEDULE
+      EVERY 1 HOUR
+    DO
+      DELETE FROM cryptorestapi.exchangerate WHERE timestampdiff(hour, date, now()) > 24;

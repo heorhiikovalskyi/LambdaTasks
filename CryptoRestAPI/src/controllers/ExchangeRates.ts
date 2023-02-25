@@ -94,7 +94,6 @@ export async function GetExchangeRates(
 }
 
 function UpdateDB() {
-  console.log("dsfdsfdsf");
   CallbacksForDiffMarketResponses.forEach((element) => {
     axios({
       method: "get",

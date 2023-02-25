@@ -43,16 +43,13 @@ export const MakeCoinMarketCapInsertQuery = (
 };
 
 export const MakeCoinBaseInsertQuery = (marketResponse: CoinBaseResponse) => {
-  // console.log(marketResponse.data);
   const market = Markets.CoinBase;
   const ExchangeRates = marketResponse.data.data.rates;
-  // console.log(ExchangeRates);
+
   let query =
     "INSERT INTO exchangerate (market, cryptocurrency, conversiontoUSD, date) VALUES ";
   for (let currency in ExchangeRates) {
-    //console.log(`dsfdsfsdf${currencie}`);
     if (currencies.includes(currency)) {
-      // console.log(`dsfdsfsdf${currencie}`);
       query += `(${market}, (SELECT id FROM cryptocurrency WHERE symbol = '${currency}'),
                 ${1 / ExchangeRates[currency]}, now()), `;
     }

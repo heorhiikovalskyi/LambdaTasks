@@ -5,6 +5,7 @@ export function getCurrencies(): Promise<string[]> {
     mysqlconnectionsPool.query(
       `SELECT symbol FROM cryptocurrency`,
       function (err, results, fields) {
+        //console.log(results);
         let currencies: string[] = [];
         results.forEach((row: { symbol: string }) =>
           currencies.push(row.symbol)

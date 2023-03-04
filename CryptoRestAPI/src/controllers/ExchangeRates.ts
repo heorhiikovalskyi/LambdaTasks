@@ -13,7 +13,7 @@ const currencies = await getCurrencies();
 
 function isUserQuery(object: unknown): object is UserQuery {
   if (object != null && typeof object === "object") {
-    return "currency" in object! && "time" in object!;
+    return "time" in object!;
   }
   return false;
 }
@@ -32,7 +32,7 @@ function GetMinutes(time: string): number {
 }
 
 function ValidateUserInput(userQuery: UserQuery) {
-  if (!currencies.includes(userQuery.currency))
+  if (userQuery.currency && !currencies.includes(userQuery.currency!))
     return {
       message: "No such currency",
       code: 400,
@@ -50,26 +50,25 @@ async function GetMarketRates(res: Response, userQuery: UserQuery) {
     await GetExchangeRatesBasedOnMarket(
       GetMinutes(userQuery.time),
       markets.indexOf(userQuery.market!) + 1,
-      userQuery.currency
+      userQuery.currency!
     ).catch((err) => {
       throw err;
     })
   );
 }
 
-async function GetAverageRate(userQuery: UserQuery, res: Response) {
-  const averageExchangee = await GetAverageExchangeRates(
+async function GetAverageRates(userQuery: UserQuery, res: Response) {
+  const averageExchanges = await GetAverageExchangeRates(
     GetMinutes(userQuery.time),
-    userQuery.currency
+    userQuery.currency!
   ).catch((err) => {
     throw err;
   });
-  const averageExchange = averageExchangee["AVG(conversiontoUSD)"];
-  res.status(200).json({
-    "average exchange rate (USD)": averageExchange
-      ? averageExchange
-      : "no rates, change time",
-  });
+  res.status(200).json(averageExchanges);
+}
+
+export function GetCurrencies(request: Request, res: Response, next: any) {
+  res.status(200).json(currencies);
 }
 
 export async function GetExchangeRates(
@@ -80,16 +79,18 @@ export async function GetExchangeRates(
   const userQuery = request.query;
   if (!isUserQuery(userQuery))
     return next({
-      message: "Need currency and time period: currency=BTC&time=45m",
+      message: "Need time period: time=45m",
       code: 400,
     });
   const validationResult = ValidateUserInput(userQuery);
   if (validationResult != "all right") return next(validationResult);
-  if (typeof userQuery.market === "undefined")
-    return GetAverageRate(userQuery, res).catch((err) => next(err));
+  if (!userQuery.market)
+    return GetAverageRates(userQuery, res).catch((err) => next(err));
   userQuery.market = userQuery.market.toLowerCase();
   if (!markets.includes(userQuery.market))
     return next({ message: "No such market", code: 400 });
+  if (!userQuery.currency)
+    return next({ message: "Need currency: currency=BTC", code: 400 });
   return GetMarketRates(res, userQuery).catch((err) => next(err));
 }
 

@@ -1,5 +1,5 @@
 export interface UserQuery {
-  currency: string;
+  currency?: string;
   market?: string;
   time: string;
 }

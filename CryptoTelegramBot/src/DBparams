@@ -1,0 +1,10 @@
+CREATE TABLE Cryptocurrency(
+id INT AUTO_INCREMENT PRIMARY KEY,
+symbol VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Chat(
+id INT PRIMARY KEY
+);
+
+CREATE TABLE FavouriteCurrency(id INT AUTO_INCREMENT PRIMARY KEY,currency INT, FOREIGN KEY (currency) REFERENCES Cryptocurrency(id) ON DELETE SET NULL, chat INT, FOREIGN KEY (chat) REFERENCES Chat(id) ON DELETE CASCADE,  constraint DifferentFavouriteCurrencies unique key(chat, currency));

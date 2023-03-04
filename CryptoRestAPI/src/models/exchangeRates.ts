@@ -1,5 +1,6 @@
 import { mysqlconnectionsPool } from "../mysql.js";
 import { AverageExchange } from "../interfaces/sql.js";
+//import { currencies } from "../controllers/ExchangeRates.js";
 function GetExchangeRatesBasedOnMarket(
   time: number,
   market: number,
@@ -19,24 +20,27 @@ function GetExchangeRatesBasedOnMarket(
   });
 }
 
-function GetAverageExchangeRates(
-  time: number,
-  currency: string
-): Promise<AverageExchange> {
+function GetAverageExchangeRates(time: number, currency: string | undefined) {
+  let query: string;
+  if (currency)
+    query = `SELECT IFNULL(AVG(conversiontoUSD), 'no rates for this currency')
+  as "average price (USD)" FROM exchangerate 
+  WHERE timestampdiff(minute, date, now()) <= ${time} 
+  AND cryptocurrency = (SELECT id FROM Cryptocurrency 
+  WHERE symbol = '${currency}');`;
+  else
+    query = `select symbol, avg(conversiontousd) as "average price (USD)" 
+             from exchangerate left join cryptocurrency 
+             on exchangerate.cryptocurrency = cryptocurrency.id
+             where timestampdiff(minute, date, now()) < ${time}  group by cryptocurrency;`;
   return new Promise((resolve, reject) => {
     mysqlconnectionsPool.query(
-      `SELECT AVG(conversiontoUSD) FROM exchangerate 
-        WHERE timestampdiff(minute, date, now()) <= ${time} 
-        AND cryptocurrency = (SELECT id FROM Cryptocurrency 
-        WHERE symbol = '${currency}');`,
-      function (err: any, result: Array<AverageExchange>, fields: any) {
-        return err ? reject(err) : resolve(result[0]);
+      query,
+      function (err: any, result: any, fields: any) {
+        return err ? reject(err) : resolve(result);
       }
     );
   });
 }
-
-//const a: any = await GetExchangeRatesBasedOnMarket(100, 3, "BTC");
-//console.log(a[0].conversiontoUSD);
 
 export { GetExchangeRatesBasedOnMarket, GetAverageExchangeRates };

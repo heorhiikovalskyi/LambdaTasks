@@ -1,3 +1,4 @@
 export interface AverageExchange {
-  "AVG(conversiontoUSD)": number | null;
+  symbol: string;
+  "average price (USD)": number | string;
 }

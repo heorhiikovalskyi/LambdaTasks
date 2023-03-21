@@ -1,6 +1,0 @@
-CREATE TABLE Links(
-id INT AUTO_INCREMENT primary KEY,
-fullLink VARCHAR(255) NOT NULL,
-shortLink VARCHAR(255) NOT NULL
-);
-alter table links add constraint uniqueLink unique key(fulllink);

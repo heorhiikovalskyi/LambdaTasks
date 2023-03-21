@@ -1,0 +1,10 @@
+import express from "express";
+import { ErrorHandler } from "./controllers/Links.js";
+import { StoreFullLink, RedirectUser } from "./controllers/Links.js";
+const app = express();
+app.use(express.json());
+const PORT = 3000;
+app.post("/shortit", StoreFullLink);
+app.get("/*", RedirectUser);
+app.listen(PORT);
+app.use(ErrorHandler);

@@ -39,7 +39,7 @@ export async function RedirectUser(req: Request, res: Response, next: any) {
   }
   return res.redirect(links.fullLink);
 }
-function validateURL(link: string): Boolean {
+function validateURL(link: string): boolean {
   try {
     new URL(link);
   } catch (err) {

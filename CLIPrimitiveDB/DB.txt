@@ -1,3 +1,4 @@
 {"name":"Heorhii","gender":"male","age":19}
 {"name":"Dmytro","gender":"male","age":25}
 {"name":"Kostya","gender":"male","age":67}
+{"name":"Mike","gender":"male","age":67}

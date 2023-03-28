@@ -1,16 +1,6 @@
-//import { fileURLToPath } from "url";
-//const __filename = fileURLToPath(import.meta.url);
 import { questions } from "./index.js";
 import inquirer from "inquirer";
 import { writeFile, readFileSync } from "fs";
-//import path from "path";
-//import { fileURLToPath } from "url";
-//const __filename = fileURLToPath(import.meta.url);
-//console.log(__filename);
-//const __dirname = path.dirname(__filename);
-//const DB = __dirname + "/DB.txt";
-//const DB = path.join(__dirname, "DB.txt");
-//console.log(DB);
 const DB = "./DB.txt";
 async function AddUsers() {
   let flag = 0;

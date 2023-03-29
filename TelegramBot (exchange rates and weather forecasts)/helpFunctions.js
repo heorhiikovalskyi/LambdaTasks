@@ -1,35 +1,51 @@
-import axios from 'axios';
-import {API_KEY} from './index.js'
-async function GetCoord(city){
-    let coord
-await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}`).then(
-    (response) => {
- coord = response.data.coord
-    },
-    (error) => {
-        console.log(error)
-    }
-)
-    return {lon: coord.lon, lat: coord.lat}
-    }
+import axios from "axios";
+import "dotenv/config.js";
+async function GetCoord(city) {
+  let coord;
+  await axios
+    .get(process.env.GET_COORD_ENDPOINT + `&q=${city}`)
+    .then((response) => {
+      coord = response.data.coord;
+    });
 
-function CreateForecastMessage(weatherData){
-        const weekday = ['Неділя', 'Понеділок','Вівторок','Середа','Четвер', 'П\'ятниця', 'Субота']
-        let response = 'Прогноз погоди у Києві:'
-        let day = ''
-        weatherData.forEach((value) => {
-            let date = new Date(value.dt_txt)
-            if (day != weekday[date.getDay()]){
-                day = weekday[date.getDay()]
-                response += '\n\n'+day
-            }
-         response += '\n '+date.getHours()+":"+date.getMinutes()+"0 Температура "+value.main.temp.toFixed(0)+", відчувається як "+value.main.feels_like.toFixed(0)+", "+value.weather[0].description
-        
-        })
-    return response
-    }
-
-export{
-    GetCoord,
-    CreateForecastMessage,
+  return { lon: coord.lon, lat: coord.lat };
 }
+
+function CreateExchangesMessage(exchanges) {
+  return `Купівля/Продаж
+
+    EUR
+    ${exchanges[0].rateBuy}/${exchanges[0].rateSell}
+    USD
+    ${exchanges[1].rateBuy}/${exchanges[1].rateSell}`;
+}
+
+function CreateForecastMessage(weatherData) {
+  const weekday = [
+    "Неділя",
+    "Понеділок",
+    "Вівторок",
+    "Середа",
+    "Четвер",
+    "П'ятниця",
+    "Субота",
+  ];
+  let response = "Прогноз погоди у Києві:";
+  let day = "";
+  weatherData.forEach((weather) => {
+    let date = new Date(weather.dt_txt);
+    if (day != weekday[date.getDay()]) {
+      day = weekday[date.getDay()];
+      response += `\n\n${day}`;
+    }
+    const hour = date.getHours();
+    const minutes = date.getMinutes();
+    const temp = weather.main.temp.toFixed(0);
+    const feelsLike = weather.main.feels_like.toFixed(0);
+    const weatherDescription = weather.weather[0].description;
+    response += `\n ${hour}:${minutes}0 Температура ${temp}, відчувається як ${feelsLike}, ${weatherDescription}`;
+  });
+  return response;
+}
+
+export { GetCoord, CreateForecastMessage, CreateExchangesMessage };

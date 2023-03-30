@@ -39,7 +39,7 @@ const searchUser = async (usersArray) => {
   const { name } = answers;
   let count = 0;
   usersArray.forEach((user) => {
-    if (user.name == name) {
+    if (user.name === name) {
       console.log(user);
       count += 1;
     }

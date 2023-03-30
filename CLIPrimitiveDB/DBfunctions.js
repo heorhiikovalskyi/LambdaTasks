@@ -1,60 +1,52 @@
-import { questions } from "./index.js";
+import { questions } from "./questions.js";
 import inquirer from "inquirer";
 import { writeFile, readFileSync } from "fs";
 const DB = "./DB.txt";
-async function AddUsers() {
+const addUsers = async () => {
   let flag = 0;
-  while (flag == 0) {
-    await inquirer.prompt(questions).then((answers) => {
-      if (answers.name === "") {
-        flag += 1;
-        return;
+  while (flag === 0) {
+    const answers = await inquirer.prompt(questions.q1);
+    const { name } = answers;
+    if (!name) {
+      flag += 1;
+      return;
+    }
+    writeFile(
+      "./DB.txt",
+      JSON.stringify(answers) + "\n",
+      { flag: "a" },
+      function (err) {
+        if (err) return console.log(err);
       }
-      writeFile(
-        "./DB.txt",
-        JSON.stringify(answers) + "\n",
-        { flag: "a" }, //new data will be added to file
-        function (err) {
-          if (err) return console.log(err);
-        }
-      );
-    });
+    );
   }
-}
+};
 
-function GetUsers() {
+const getUsers = () => {
   let usersArray;
   try {
     usersArray = readFileSync(DB, "utf8").split("\n");
   } catch (err) {
-    throw new Error();
+    throw new Error("error in reading file");
   }
   usersArray.pop();
-  for (let i = 0; i < usersArray.length; i++) {
-    usersArray[i] = JSON.parse(usersArray[i]);
-  }
+  usersArray.forEach((user, index) => (usersArray[index] = JSON.parse(user)));
   return usersArray;
-}
+};
 
-async function SearchUser(usersArray) {
-  await inquirer
-    .prompt([
-      {
-        type: "input",
-        message: "Write a name of user",
-        name: "name",
-      },
-    ])
-    .then((answers) => {
-      let count = 0;
-      for (let i = 0; i < usersArray.length; i++) {
-        if (answers.name === usersArray[i].name) {
-          console.log(usersArray[i]);
-          count += 1;
-        }
-      }
-      if (count == 0) console.log("No such users");
-    });
-}
+const searchUser = async (usersArray) => {
+  const answers = await inquirer.prompt(questions.q2);
+  const { name } = answers;
+  let count = 0;
+  usersArray.forEach((user) => {
+    if (user.name == name) {
+      console.log(user);
+      count += 1;
+    }
+  });
+  if (count === 0) {
+    console.log("No such users");
+  }
+};
 
-export { GetUsers, SearchUser, AddUsers };
+export { getUsers, searchUser, addUsers };

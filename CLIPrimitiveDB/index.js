@@ -1,56 +1,19 @@
 import inquirer from "inquirer";
-import { GetUsers, SearchUser, AddUsers } from "./DBfunctions.js";
-//if we upload file without enter in the end:
-/*  try{
-        const file = readFileSync(DB, "utf8")
-        if (file[file.length - 1] != '\n'){
-            writeFile(DB, '\n', {flag: 'a'})
-        }}
-        catch (err){
-            console.error(err);
-        }
-*/
-const questions = [
-  {
-    type: "input",
-    name: "name",
-    message: "What`s your name? Press ENTER to cancel",
-  },
-  {
-    type: "list",
-    name: "gender",
-    message: "Choose your gender",
-    choices: ["male", "female"],
-    when: (answers) => answers.name != "",
-  },
-  {
-    type: "number",
-    name: "age",
-    message: "How old are you?",
-    when: (answers) => answers.name != "",
-  },
-];
+import { getUsers, searchUser, addUsers } from "./DBfunctions.js";
+import { questions } from "./questions.js";
 
-await AddUsers();
-await inquirer
-  .prompt([
-    {
-      type: "confirm",
-      name: "search",
-      message: "Do you want to search user?",
-    },
-  ])
-  .then(async function (answers) {
-    if (answers.search == true) {
-      let usersArray;
-      try {
-        usersArray = GetUsers();
-      } catch (err) {
-        return console.log("Smth wrong with DB. Sorry and try later");
-      }
-      console.log(usersArray);
-      await SearchUser(usersArray);
-    }
-  });
+await addUsers();
+
+const answers = await inquirer.prompt(questions.q3);
+const { search } = answers;
+if (search) {
+  let usersArray;
+  try {
+    usersArray = getUsers();
+    console.log(usersArray);
+    await searchUser(usersArray);
+  } catch (err) {
+    console.log("Smth wrong with DB. Sorry and try later");
+  }
+}
 console.log("Exit");
-export { questions };

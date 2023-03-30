@@ -1,4 +1,4 @@
-import { messages } from "./messages";
+import { messages } from "./messages.js";
 process.stdout.write(
   "Hello. Write a few words and numbers separated by a space or write exit to finish: "
 );

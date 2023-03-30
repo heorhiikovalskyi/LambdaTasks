@@ -18,12 +18,10 @@ app.post("/", (req, res) => {
   const workingTime = GetWorkingTime(language, symbolsCount, extension);
   const price = GetPrice(language, symbolsCount, extension);
   const deadline = GetDeadline(workingTime, new Date());
-  res
-    .status(200)
-    .send({
-      price: price.toFixed(2),
-      time: workingTime.toFixed(2),
-      deadline: Math.floor(deadline.getTime() / 1000),
-      deadline_date: deadline.toLocaleString(),
-    });
+  res.status(200).send({
+    price: price.toFixed(2),
+    time: workingTime.toFixed(2),
+    deadline: Math.floor(deadline.getTime() / 1000),
+    deadline_date: deadline.toLocaleString(),
+  });
 });

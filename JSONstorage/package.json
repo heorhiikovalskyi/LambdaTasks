@@ -1,4 +1,7 @@
 {
+  "scripts": {
+    "start": "ts-node-esm ./src/server.ts "
+  },
   "type": "module",
   "dependencies": {
     "dotenv": "^16.0.3",

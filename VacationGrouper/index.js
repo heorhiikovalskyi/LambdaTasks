@@ -16,9 +16,7 @@ class worker {
 
 function FindName(name) {
   for (let i = 0; i < resultJSON.length; i++) {
-    if (resultJSON[i].name == name) {
-      return i;
-    }
+    if (resultJSON[i].name === name) return i;
   }
   return false;
 }
@@ -30,10 +28,7 @@ for (let i = 0; i < inputJSON.length; i++) {
     startDate: inputJSON[i]["startDate"],
     endDate: inputJSON[i]["endDate"],
   };
-  if (FindName(name) === false) {
-    resultJSON.push(new worker(id, name, weekend));
-  } else {
-    resultJSON[FindName(name)].AddWeekend(weekend);
-  }
+  if (FindName(name) === false) resultJSON.push(new worker(id, name, weekend));
+  else resultJSON[FindName(name)].AddWeekend(weekend);
 }
 console.log(JSON.stringify(resultJSON, null, 2));

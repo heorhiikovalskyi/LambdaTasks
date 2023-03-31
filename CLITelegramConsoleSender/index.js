@@ -2,9 +2,7 @@ import "dotenv/config.js";
 process.env["NTBA_FIX_350"] = 1;
 import TelegramBot from "node-telegram-bot-bot";
 import * as commander from "commander";
-
-const TOKEN = process.env.TOKEN;
-const CHAT_ID = process.env.CHAT_ID;
+const { TOKEN, CHAT_ID } = process.env;
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 

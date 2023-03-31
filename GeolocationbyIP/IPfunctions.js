@@ -1,21 +1,20 @@
-function BinarySearch(IPMatrix, IP) {
+const binarySearch = (ipMatrix, ip) => {
   let left = 0;
-  let right = IPMatrix.length - 1;
+  let right = ipMatrix.length - 1;
   let mid;
   while (left <= right) {
     mid = Math.round(left + (right - left) / 2);
-    if (IP < IPMatrix[mid][0]) right = mid - 1;
-    else if (IP > IPMatrix[mid][1]) left = mid + 1;
-    else return IPMatrix[mid];
+    const [startIp, endIp] = ipMatrix[mid];
+    if (ip < startIp) right = mid - 1;
+    else if (ip > endIp) left = mid + 1;
+    else return ipMatrix[mid];
   }
-}
-function IPToDecimal(IP) {
-  IP = IP.split(".");
+};
+const ipToDecimal = (ip) => {
+  ip = ip.split(".");
   let decimal = 0;
-  for (let i = 0; i < IP.length; i++) {
-    decimal += IP[i] * Math.pow(256, 3 - i);
-  }
+  ip.forEach((number, index) => (decimal += number * Math.pow(256, 3 - index)));
   return decimal;
-}
+};
 
-export { IPToDecimal, BinarySearch };
+export { ipToDecimal, binarySearch };

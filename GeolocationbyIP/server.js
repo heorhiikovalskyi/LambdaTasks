@@ -1,29 +1,28 @@
-//ngrok endpoint: https://12ad-85-118-78-199.eu.ngrok.io
+import "dotenv/config.js";
 import express from "express";
 import { readFileSync } from "fs";
-import { BinarySearch, IPToDecimal } from "./IPfunctions.js";
+import { binarySearch, ipToDecimal } from "./IPfunctions.js";
 const app = express();
-const IP_BASE = "IP2LOCATION-LITE-DB1.CSV";
-const IPMatrix = readFileSync(`./${IP_BASE}`, "utf8").split("\n");
-const PORT = 3000;
-MakeMatrix();
-function MakeMatrix() {
-  for (let i = 0; i < IPMatrix.length; i++) {
-    IPMatrix[i] = IPMatrix[i].split(",");
+const { IP_BASE, PORT } = process.env;
+const ipMatrix = readFileSync(`./${IP_BASE}`, "utf8").split("\n");
+const makeMatrix = () => {
+  for (let i = 0; i < ipMatrix.length; i++) {
+    ipMatrix[i] = ipMatrix[i].split(",");
     for (let j = 0; j < 3; j++) {
-      IPMatrix[i][j] = IPMatrix[i][j].replace(/"/g, "");
+      ipMatrix[i][j] = ipMatrix[i][j].replace(/"/g, "");
     }
-    IPMatrix[i][3] = IPMatrix[i][3].trim("\r").replace(/"/g, "");
+    ipMatrix[i][3] = ipMatrix[i][3].trim("\r").replace(/"/g, "");
   }
-}
+};
+makeMatrix();
 
-app.listen(PORT);
 app.get("/", (req, res) => {
   const ip = req.headers["x-forwarded-for"] || req.socket.remoteAddress;
-  const IPtoCountry = BinarySearch(IPMatrix, IPToDecimal(ip));
+  const [startIp, endIp, country] = binarySearch(ipMatrix, ipToDecimal(ip));
   res.status(200).send({
-    country: IPtoCountry[3],
+    country: country,
     IP: ip,
-    range: [IPtoCountry[0], IPtoCountry[1]],
+    range: [startIp, endIp],
   });
 });
+app.listen(PORT);

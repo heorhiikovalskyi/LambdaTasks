@@ -1,34 +1,35 @@
 import inputJSON from "./vacations.json" assert { type: "json" };
 const resultJSON = [];
-class worker {
-  _id;
+class Worker {
+  id;
   name;
   weekends;
   constructor(id, name, weekend) {
-    this._id = id;
+    this.id = id;
     this.name = name;
     this.weekends = [weekend];
   }
-  AddWeekend(weekend) {
+  addWeekend(weekend) {
     this.weekends.push(weekend);
   }
 }
 
-function FindName(name) {
+const findName = (name) => {
   for (let i = 0; i < resultJSON.length; i++) {
-    if (resultJSON[i].name === name) return i;
+    const { name: workerName } = resultJSON[i];
+    if (workerName === name) return i;
   }
   return false;
-}
+};
 
-for (let i = 0; i < inputJSON.length; i++) {
-  const name = inputJSON[i]["user"]["name"];
-  const id = inputJSON[i]["user"]["_id"];
-  const weekend = {
-    startDate: inputJSON[i]["startDate"],
-    endDate: inputJSON[i]["endDate"],
-  };
-  if (FindName(name) === false) resultJSON.push(new worker(id, name, weekend));
-  else resultJSON[FindName(name)].AddWeekend(weekend);
-}
+inputJSON.forEach((record) => {
+  const { name, _id: id } = record.user;
+  const weekend = { startDate: record.startDate, endDate: record.endDate };
+  if (!findName(name)) {
+    resultJSON.push(new Worker(id, name, weekend));
+  } else {
+    resultJSON[findName(name)].addWeekend(weekend);
+  }
+});
+
 console.log(JSON.stringify(resultJSON, null, 2));

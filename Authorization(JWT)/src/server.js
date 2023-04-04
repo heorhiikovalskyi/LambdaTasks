@@ -1,6 +1,5 @@
 import express from "express";
 import { MongoClient } from "mongodb";
-
 import "dotenv/config.js";
 import { connectToDb } from "./connectToDb.js";
 import { authRouter } from "./routers/authRouter.js";

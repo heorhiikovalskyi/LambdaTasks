@@ -71,11 +71,7 @@ const questions = [
   {
     type: "confirm",
     name: "change",
-    message: (answers) =>
-      `Do you want to change the name: ${answers.path
-        .split("\\")
-        .pop()
-        .trim("'")}?`,
+    message: (answers) => `Do you want to change the name: ${answers.path.split("\\").pop().trim("'")}?`,
   },
   {
     type: "input",
@@ -91,9 +87,7 @@ await inquirer.prompt(questions).then(async (answers) => {
   if (answers.change == true) answers.name += answers.extension;
   else answers.name = fileName;
   try {
-    let imageID = (
-      await UploadFile(answers.name, answers.extension, answers.path)
-    ).data.id;
+    let imageID = (await UploadFile(answers.name, answers.extension, answers.path)).data.id;
 
     imageLink = (
       await drive.files.get({

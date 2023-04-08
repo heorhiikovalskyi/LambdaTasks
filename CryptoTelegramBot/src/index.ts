@@ -32,11 +32,8 @@ bot.on("message", (msg) => {
   if (command === "/start") HelloUser(msg);
   else if (command === "/help") HelpUser(msg);
   else if (command === "/list_recent") ListRecent(msg);
-  else if (command?.startsWith("/addtofavourite"))
-    AddCurrencyInFavourites(msg, msg.text!.slice(15).trim());
+  else if (command?.startsWith("/addtofavourite")) AddCurrencyInFavourites(msg, msg.text!.slice(15).trim());
   else if (command === "/listfavourite") ListFavourite(msg);
-  else if (command?.startsWith("/deletefavourite"))
-    DeleteCurrencyFromFav(msg, msg.text!.slice(16).trim());
-  else if (command!.length > 1)
-    ShowDetailedCurrencyInfo(msg, msg.text!.slice(1));
+  else if (command?.startsWith("/deletefavourite")) DeleteCurrencyFromFav(msg, msg.text!.slice(16).trim());
+  else if (command!.length > 1) ShowDetailedCurrencyInfo(msg, msg.text!.slice(1));
 });

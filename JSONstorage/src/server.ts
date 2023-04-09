@@ -1,14 +1,14 @@
 import express from "express";
 import "dotenv/config.js";
-import { ConnectToDB } from "./DBConnect.js";
-import { router } from "../routes/SendAndGetJSON.js";
-import { ErrorHandlerIfNotJSON } from "../controllers/StoreJSONfromUserController.js";
-await ConnectToDB(process.env.MONGO_SERVER_URL!);
-
+import { connectToDb } from "./dbConnect.js";
+import { storeUsersJson } from "./controllers/storeJsonFromUserController.js";
+import { sendJson } from "./controllers/sendJsonToUserController.js";
+import { errorHandlerIfNotJson } from "./controllers/errorHandler.js";
+const { MONGO_SERVER_URL, PORT } = process.env;
+await connectToDb(MONGO_SERVER_URL!);
 const app = express();
 app.use(express.json());
-const PORT = 3000;
-
+app.post("/*", storeUsersJson);
+app.get("/*", sendJson);
+app.use(errorHandlerIfNotJson);
 app.listen(PORT);
-app.use(router);
-app.use(ErrorHandlerIfNotJSON);

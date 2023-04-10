@@ -1,46 +1,44 @@
-import { mysqlconnectionsPool } from "../mysql.js";
-import { AverageExchange } from "../interfaces/sql.js";
-//import { currencies } from "../controllers/ExchangeRates.js";
-function GetExchangeRatesBasedOnMarket(
-  time: number,
-  market: number,
-  currency: string
-) {
+import { mySqlConnectionsPool } from "../mysql.js";
+export const getMarketExchanges = (time: number, market: number, currency: string) => {
   return new Promise((resolve, reject) => {
-    mysqlconnectionsPool.query(
+    mySqlConnectionsPool.query(
       `SELECT conversiontoUSD, date FROM exchangerate 
-      WHERE timestampdiff(minute,date,now()) <= ${time} 
-      AND market = ${market} 
+      WHERE timestampdiff(minute,date,now()) <= ? 
+      AND market = ?
       AND cryptocurrency = (SELECT id FROM Cryptocurrency 
-      WHERE symbol = '${currency}');`,
-      function (err, exchangeRates, fields) {
+      WHERE symbol = ?);`,
+      [time, market, currency],
+      (err, exchangeRates) => {
         return err ? reject(err) : resolve(exchangeRates);
       }
     );
   });
-}
+};
 
-function GetAverageExchangeRates(time: number, currency: string | undefined) {
+export const getCurrencyAverageExchanges = (time: number, currency: string) => {
   let query: string;
-  if (currency)
-    query = `SELECT IFNULL(AVG(conversiontoUSD), 'no rates for this currency')
+  query = `SELECT IFNULL(AVG(conversiontoUSD), 'no rates for this currency')
   as "average price (USD)" FROM exchangerate 
-  WHERE timestampdiff(minute, date, now()) <= ${time} 
+  WHERE timestampdiff(minute, date, now()) <= ?
   AND cryptocurrency = (SELECT id FROM Cryptocurrency 
-  WHERE symbol = '${currency}');`;
-  else
-    query = `select symbol, avg(conversiontousd) as "average price (USD)" 
+  WHERE symbol = ?);`;
+  return new Promise((resolve, reject) => {
+    mySqlConnectionsPool.query(query, [time, currency], (err, exchangeRates) => {
+      return err ? reject(err) : resolve(exchangeRates);
+    });
+  });
+};
+
+export const getCurrenciesAverageExchanges = (time: number) => {
+  let query: string;
+  query = `select symbol, avg(conversiontousd) as "average price (USD)" 
              from exchangerate left join cryptocurrency 
              on exchangerate.cryptocurrency = cryptocurrency.id
-             where timestampdiff(minute, date, now()) < ${time}  group by cryptocurrency;`;
-  return new Promise((resolve, reject) => {
-    mysqlconnectionsPool.query(
-      query,
-      function (err: any, result: any, fields: any) {
-        return err ? reject(err) : resolve(result);
-      }
-    );
-  });
-}
+             where timestampdiff(minute, date, now()) < ? group by cryptocurrency;`;
 
-export { GetExchangeRatesBasedOnMarket, GetAverageExchangeRates };
+  return new Promise((resolve, reject) => {
+    mySqlConnectionsPool.query(query, [time], (err, exchangeRates) => {
+      return err ? reject(err) : resolve(exchangeRates);
+    });
+  });
+};

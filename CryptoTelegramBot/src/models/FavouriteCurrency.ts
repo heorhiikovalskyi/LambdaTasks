@@ -12,9 +12,7 @@ export function DeleteFavCur(chat: number, currency: string): Promise<void> {
   });
 }
 
-export function GetUserFavourites(
-  chat: number
-): Promise<Array<{ symbol: string }> | void> {
+export function GetUserFavourites(chat: number): Promise<Array<{ symbol: string }> | void> {
   return new Promise(async (resolve, reject) => {
     const currencies = await db
       .all(
@@ -26,10 +24,7 @@ export function GetUserFavourites(
   });
 }
 
-export function InsertFavCurrency(
-  chat: number,
-  currency: string
-): Promise<void> {
+export function InsertFavCurrency(chat: number, currency: string): Promise<void> {
   return new Promise(async (resolve, reject) => {
     await db
       .run(

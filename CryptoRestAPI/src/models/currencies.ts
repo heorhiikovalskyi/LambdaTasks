@@ -1,17 +1,11 @@
-import { mysqlconnectionsPool } from "../mysql.js";
+import { mySqlConnectionsPool } from "../mysql.js";
 
 export function getCurrencies(): Promise<string[]> {
   return new Promise((resolve, reject) => {
-    mysqlconnectionsPool.query(
-      `SELECT symbol FROM cryptocurrency`,
-      function (err, results, fields) {
-        //console.log(results);
-        let currencies: string[] = [];
-        results.forEach((row: { symbol: string }) =>
-          currencies.push(row.symbol)
-        );
-        return err ? reject(err) : resolve(currencies);
-      }
-    );
+    mySqlConnectionsPool.query(`SELECT symbol FROM cryptocurrency`, (err: any, results: { symbol: string }[]) => {
+      let currencies: string[] = [];
+      results.forEach((row: { symbol: string }) => currencies.push(row.symbol));
+      return err ? reject(err) : resolve(currencies);
+    });
   });
 }

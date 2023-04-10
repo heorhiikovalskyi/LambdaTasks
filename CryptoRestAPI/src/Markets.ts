@@ -1,11 +1,12 @@
 import "dotenv/config.js";
 import {
-  MakeCoinStatsInsertQuery,
-  MakeCoinMarketCapInsertQuery,
-  MakeCoinBaseInsertQuery,
-  MakeKucoinInsertQuery,
-  MakeCoinPaprikaInsertQuery,
-} from "./MakeInsertQueryForDiffMarkets.js";
+  makeCoinStatsInsertQuery,
+  makeCoinMarketCapInsertQuery,
+  makeCoinBaseInsertQuery,
+  makeKucoinInsertQuery,
+  makeCoinPaprikaInsertQuery,
+} from "./makeInsertQueryForDiffMarkets.js";
+const { COIN_MARKET_CAP_API_KEY } = process.env;
 enum Markets {
   CoinMarketCap = 1,
   CoinBase,
@@ -14,34 +15,28 @@ enum Markets {
   CoinPaprika,
 }
 
-const markets = [
-  "coinmarketcap",
-  "coinbase",
-  "coinstats",
-  "kucoin",
-  "coinpaprika",
-];
+const markets = ["coinmarketcap", "coinbase", "coinstats", "kucoin", "coinpaprika"];
 
-export const CallbacksForDiffMarketResponses = [
+export const callbacksForDiffMarketResponses = [
   {
     url: "http://api.coinstats.app/public/v1/coins?currency=USD",
-    callback: MakeCoinStatsInsertQuery,
+    getQuery: makeCoinStatsInsertQuery,
   },
   {
-    url: `http://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${process.env.CoinMarketCapAPIkey}`,
-    callback: MakeCoinMarketCapInsertQuery,
+    url: `http://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?CMC_PRO_API_KEY=${COIN_MARKET_CAP_API_KEY}`,
+    getQuery: makeCoinMarketCapInsertQuery,
   },
   {
     url: "http://api.coinbase.com/v2/exchange-rates",
-    callback: MakeCoinBaseInsertQuery,
+    getQuery: makeCoinBaseInsertQuery,
   },
   {
     url: "http://api.kucoin.com./api/v1/prices",
-    callback: MakeKucoinInsertQuery,
+    getQuery: makeKucoinInsertQuery,
   },
   {
     url: "http://api.coinpaprika.com/v1/tickers",
-    callback: MakeCoinPaprikaInsertQuery,
+    getQuery: makeCoinPaprikaInsertQuery,
   },
 ];
 

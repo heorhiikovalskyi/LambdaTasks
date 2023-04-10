@@ -1,11 +1,11 @@
-import mysql from "mysql";
+import mysql from "mysql2";
 import "dotenv/config.js";
-
-const mysqlconnectionsPool = mysql.createPool({
-  host: process.env.SQLserverHost,
-  user: process.env.SQLserverUser,
-  password: process.env.SQLserverPassword,
-  database: process.env.Database,
+const { SQL_PASSWORD, SQL_USER, SQL_HOST, DB } = process.env;
+const mySqlConnectionsPool = mysql.createPool({
+  host: SQL_HOST,
+  user: SQL_USER,
+  password: SQL_PASSWORD,
+  database: DB,
 });
 
-export { mysqlconnectionsPool };
+export { mySqlConnectionsPool };

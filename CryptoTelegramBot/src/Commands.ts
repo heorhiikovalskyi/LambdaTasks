@@ -19,7 +19,7 @@ export const commands = [
   },
 ];
 
-export const commandstodisplayinMenu = [
+export const commandsToDisplayInMenu = [
   { command: "/help", description: "get bot description and functionality" },
   { command: "/list_recent", description: "get 50 most populare currencies" },
   {

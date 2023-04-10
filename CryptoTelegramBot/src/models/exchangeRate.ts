@@ -4,9 +4,7 @@ import { averageExchange } from "../interfaces/averageExchange.js";
 export function GetCurrencyAverageExchangeRate(
   time: number,
   currency: string
-): Promise<
-  Array<{ "average price (USD)": string | "no rates for this currency" }>
-> {
+): Promise<Array<{ "average price (USD)": string | "no rates for this currency" }>> {
   return new Promise(async (resolve, reject) => {
     const response = await axios({
       method: "get",
@@ -17,9 +15,7 @@ export function GetCurrencyAverageExchangeRate(
   });
 }
 
-export function GetAllCurrenciesAverageExchangeRates(
-  time: number
-): Promise<Array<averageExchange>> {
+export function GetAllCurrenciesAverageExchangeRates(time: number): Promise<Array<averageExchange>> {
   return new Promise(async (resolve, reject) => {
     const response = await axios({
       method: "get",

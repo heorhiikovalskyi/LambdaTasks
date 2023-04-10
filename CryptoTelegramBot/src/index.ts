@@ -1,6 +1,6 @@
 import TelegramBot from "node-telegram-bot-api";
 import "dotenv/config.js";
-import { commandstodisplayinMenu } from "./Commands.js";
+import { commandsToDisplayInMenu } from "./Commands.js";
 import {
   HelloUser,
   HelpUser,
@@ -10,11 +10,12 @@ import {
   ListFavourite,
   DeleteCurrencyFromFav,
 } from "./controllers/TelegramBot.js";
-export const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN!, {
+const { TELEGRAM_API_TOKEN } = process.env;
+export const bot = new TelegramBot(TELEGRAM_API_TOKEN!, {
   polling: true,
 });
 
-bot.setMyCommands(commandstodisplayinMenu);
+bot.setMyCommands(commandsToDisplayInMenu);
 
 bot.on("callback_query", (query) => {
   if (query.data?.startsWith("Add")) {

@@ -1,18 +1,22 @@
 import { db } from "../ConnectToDB.js";
-export function FindChat(id: number) {
+export const findChat = (id: number) => {
   return new Promise(async (resolve, reject) => {
-    const chat = await db
-      .get(`SELECT id FROM Chat WHERE id = ?;`, [id], function (err: any, row: any) {
-        err ? reject(err) : resolve(row);
-      })
-      .catch((err) => reject(err));
-    chat ? resolve(true) : resolve(false);
+    try {
+      const row = await db.get(`SELECT id FROM Chat WHERE id = ?;`, [id]);
+      resolve(row);
+    } catch (err) {
+      resolve(false);
+    }
   });
-}
+};
 
-export function InsertChat(id: number): Promise<void> {
+export const insertChat = (id: number): Promise<void> => {
   return new Promise(async (resolve, reject) => {
-    await db.run(`INSERT INTO Chat(id) VALUES (?)`, [id]).catch((err) => reject(err));
-    resolve();
+    try {
+      await db.run(`INSERT INTO Chat(id) VALUES (?)`, [id]);
+      resolve();
+    } catch (err) {
+      reject(err);
+    }
   });
-}
+};

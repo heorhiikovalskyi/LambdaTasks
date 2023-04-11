@@ -1,26 +1,15 @@
 import { Request, Response } from "express";
 import "dotenv/config.js";
-import {
-  InsertLinks,
-  FindLastLinks,
-  FindByShortLink,
-  FindByFullLink,
-} from "../models/Links.js";
+import { InsertLinks, FindLastLinks, FindByShortLink, FindByFullLink } from "../models/Links.js";
 import { links } from "../types.js";
 let counter = (await FindLastLinks()).counter;
-export async function ErrorHandler(
-  err: any,
-  req: Request,
-  res: Response,
-  next: any
-) {
+export async function ErrorHandler(err: any, req: Request, res: Response, next: any) {
   if (err.code === 400) return res.status(err.code).send(err.message);
   console.log(err);
   return res.sendStatus(500);
 }
 function toBase62(number: number): string {
-  const baseChars =
-    "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const baseChars = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
   let result = "";
   do {
     result = baseChars[number % 62] + result;
@@ -49,8 +38,7 @@ function validateURL(link: string): boolean {
 }
 export async function StoreFullLink(req: Request, res: Response, next: any) {
   const fullLink: string = req.body.link;
-  if (!validateURL(fullLink))
-    return next({ code: 400, message: "Invalid URL" });
+  if (!validateURL(fullLink)) return next({ code: 400, message: "Invalid URL" });
   counter += 1;
   let shortLink = toBase62(counter);
   const links: links = {

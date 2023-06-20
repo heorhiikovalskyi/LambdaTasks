@@ -1,4 +1,4 @@
-interface CoinStatsExchangeRate {
+export interface CoinStatsExchangeRate {
   symbol: string;
   price: number;
 }

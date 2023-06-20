@@ -1,0 +1,149 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "prevId": "",
+  "version": "5",
+  "dialect": "mysql",
+  "tables": {
+    "cryptocurrency": {
+      "name": "cryptocurrency",
+      "schema": "cryptorestapi",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "symbol": {
+          "autoincrement": false,
+          "name": "symbol",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "symbol": {
+          "name": "symbol",
+          "columns": ["symbol"],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {}
+    },
+    "exchangerate": {
+      "name": "exchangerate",
+      "schema": "cryptorestapi",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "market": {
+          "autoincrement": false,
+          "name": "market",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cryptocurrency": {
+          "autoincrement": false,
+          "name": "cryptocurrency",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "conversiontoUSD": {
+          "autoincrement": false,
+          "name": "conversiontoUSD",
+          "type": "float",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "date": {
+          "autoincrement": false,
+          "name": "date",
+          "type": "datetime",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {
+        "market": {
+          "name": "market",
+          "columns": ["market"],
+          "isUnique": false
+        },
+        "cryptocurrency": {
+          "name": "cryptocurrency",
+          "columns": ["cryptocurrency"],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "exchangerate_ibfk_1": {
+          "name": "exchangerate_ibfk_1",
+          "tableFrom": "exchangerate",
+          "tableTo": "market",
+          "columnsFrom": ["market"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        },
+        "exchangerate_ibfk_2": {
+          "name": "exchangerate_ibfk_2",
+          "tableFrom": "exchangerate",
+          "tableTo": "cryptocurrency",
+          "columnsFrom": ["cryptocurrency"],
+          "columnsTo": ["id"],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      }
+    },
+    "market": {
+      "name": "market",
+      "schema": "cryptorestapi",
+      "columns": {
+        "id": {
+          "autoincrement": true,
+          "name": "id",
+          "type": "int",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "autoincrement": false,
+          "name": "name",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {}
+    }
+  },
+  "schemas": {
+    "cryptorestapi": "cryptorestapi"
+  },
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  }
+}

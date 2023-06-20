@@ -1,13 +1,19 @@
 import express from "express";
-import { errorHandler } from "./controllers/exchangeRates.js";
-import { GetExchangeRates, sendCurrencies } from "./controllers/exchangeRates.js";
-import { updateExchangeRates } from "./cron-ping.js";
 import "dotenv/config.js";
+import { errorHandler } from "./controllers/errorHandler.js";
+import { getExchangeRates, sendCurrencies } from "./controllers/app.js";
+import { updateExchangeRates } from "./cron-ping.js";
+import { validateRequest } from "./controllers/validation.js";
 const { PORT } = process.env;
+
 updateExchangeRates.start();
 const app = express();
+
 app.use(express.json());
-app.get("/exchangeRates", GetExchangeRates);
+
+app.get("/exchangeRates", validateRequest, getExchangeRates);
 app.get("/currencies", sendCurrencies);
+
 app.use(errorHandler);
+
 app.listen(PORT);

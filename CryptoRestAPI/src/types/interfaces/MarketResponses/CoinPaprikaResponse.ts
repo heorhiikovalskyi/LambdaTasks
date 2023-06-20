@@ -6,7 +6,7 @@ interface CoinPaprikaQuotes {
   USD: CoinPaprikaUSD;
 }
 
-interface CoinPaprikaExchangeRate {
+export interface CoinPaprikaExchangeRate {
   symbol: string;
   quotes: CoinPaprikaQuotes;
   last_updated: string;

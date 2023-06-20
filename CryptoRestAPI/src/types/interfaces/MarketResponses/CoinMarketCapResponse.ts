@@ -7,7 +7,7 @@ interface CoinMarketCapQuote {
   USD: CoinMarketCapUSD;
 }
 
-interface CoinMarketCapExchangeRate {
+export interface CoinMarketCapExchangeRate {
   symbol: string;
   quote: CoinMarketCapQuote;
 }

@@ -1,0 +1,14 @@
+service: Serverless
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  profile: serverlesuser
+functions:
+  api:
+    handler: index.hello
+    events:
+      - httpApi:
+          path: /
+          method: get

@@ -1,0 +1,220 @@
+service: imageuploadtos3-v2
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  profile: default
+  region: eu-central-1
+
+  environment:
+    USER_POOL_CLIENT_ID: !Ref MyCognitoUserPoolClient
+    USER_POOL_ID: !Ref MyCognitoUserPool
+    BUCKET: !Ref S3Bucket
+    TABLE: !Ref Images
+    REGION: eu-central-1
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminUpdateUserAttributes
+            - cognito-idp:AdminConfirmSignUp
+            - cognito-idp:InitiateAuth
+          Resource: !GetAtt MyCognitoUserPool.Arn
+
+        - Effect: Allow
+          Action:
+            - dynamodb:DescribeTable
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource: !GetAtt Images.Arn
+
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: "arn:aws:logs:*:*:*"
+
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+            - lambda:InvokeFunction
+          Resource: !Join ["/", [!GetAtt S3Bucket.Arn, "*"]]
+
+resources:
+  Resources:
+    libs:
+      Type: AWS::Lambda::LayerVersion
+      Properties:
+        Content:
+          S3Bucket: uploadtos3libs
+          S3Key: nodejs.zip
+        CompatibleRuntimes:
+          - nodejs16.x
+
+    S3Bucket:
+      Type: "AWS::S3::Bucket"
+      Properties:
+        BucketName: bucket15643
+        PublicAccessBlockConfiguration:
+          BlockPublicPolicy: false
+          RestrictPublicBuckets: false
+        OwnershipControls:
+          Rules:
+            - ObjectOwnership: BucketOwnerPreferred
+
+    MyCognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: CognitoUserPoolImages
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+        UsernameAttributes:
+          - email
+        Schema:
+          - AttributeDataType: String
+            Name: email
+            Required: true
+        AutoVerifiedAttributes:
+          - email
+
+    MyCognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        UserPoolId: !Ref MyCognitoUserPool
+        ClientName: CognitoUserPoolClientImages
+        GenerateSecret: false
+        SupportedIdentityProviders:
+          - COGNITO
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+
+    Images:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: imagesStorage
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    Authorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        IdentitySource: method.request.header.Authorization
+        Name: CognitoAuthorizer
+        RestApiId: x7ggla8768
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          - !GetAtt MyCognitoUserPool.Arn
+
+package:
+  individually: true
+  exclude:
+    - "**"
+
+functions:
+  signUp:
+    handler: ./dist/signUp.signUp
+    events:
+      - http:
+          path: /signUp/
+          method: post
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/signUp.js"
+
+  signIn:
+    handler: ./dist/signIn.signIn
+    events:
+      - http:
+          path: /signIn/
+          method: post
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/signIn.js"
+
+  presignedPost:
+    handler: ./dist/presignedPost.presignedPost
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/presignedPost.js"
+    events:
+      - http:
+          path: /presignedPost/
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: Authorizer }
+            claims:
+              - email
+
+  uploadToDb:
+    handler: ./dist/uploadToDb.uploadToDb
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/uploadToDb.js"
+        - "./dist/repositories/images.js"
+    events:
+      - s3:
+          bucket: bucket15643
+          event: s3:ObjectCreated:*
+          existing: true
+
+  getImages:
+    handler: ./dist/getImages.getImages
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/getImages.js"
+        - "./dist/repositories/images.js"
+    events:
+      - http:
+          path: /getImages/
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: Authorizer }
+            claims:
+              - email
+
+  deleteImage:
+    handler: ./dist/deleteImage.deleteImage
+    layers:
+      - arn:aws:lambda:eu-central-1:904279184818:layer:libs:5
+    package:
+      patterns:
+        - "./dist/deleteImage.js"
+        - "./dist/repositories/images.js"
+    events:
+      - http:
+          path: /deleteImage/
+          method: post
+          authorizer:
+            type: COGNITO_USER_POOLS
+            authorizerId: { Ref: Authorizer }
+            claims:
+              - email

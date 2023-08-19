@@ -1,0 +1,54 @@
+service: aws-node-project
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  region: eu-central-1
+  profile: default
+  environment:
+    DB_HOST: redistribution.cdsbvdcmap97.eu-central-1.rds.amazonaws.com
+    DB_PORT: 5432
+    DB_NAME: postgres
+    DB_USERNAME: postgres
+    DB_PASSWORD: sxL7xMdWh0mtY59guq2h
+
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sqs:ReceiveMessage
+        - sqs:DeleteMessage
+        - sqs:GetQueueAttributes
+        - sqs:SendMessage
+      Resource: !GetAtt DatabaseQueue.Arn
+
+custom:
+  webpack:
+    includeModules: true
+
+plugins:
+  - serverless-webpack
+
+package:
+  individually: true
+
+functions:
+  handler:
+    handler: ./dist/handler.handler
+    events:
+      - http:
+          path: /send/
+          method: post
+    vpc:
+      securityGroupIds:
+        - sg-087aaf1588bec441a
+        - sg-09e7b2a24ffafd378
+      subnetIds:
+        - subnet-0ec532fdf0c8c6c69
+
+resources:
+  Resources:
+    DatabaseQueue:
+      Type: AWS::SQS::Queue
+      Properties:
+        MaximumMessageSize: 1024

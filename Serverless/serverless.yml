@@ -5,6 +5,7 @@ provider:
   name: aws
   runtime: nodejs18.x
   profile: serverlesuser
+
 functions:
   api:
     handler: index.hello

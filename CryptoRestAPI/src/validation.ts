@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { markets } from "../types/enums/marketsEnum.js";
-import { UserQuery } from "../types/interfaces/userQuery.js";
-import { error } from "../types/interfaces/errors.js";
-import { currencies } from "../types/enums/currenciesEnum.js";
+import { markets } from "./types/enums/marketsEnum.js";
+import { UserQuery } from "./types/interfaces/userQuery.js";
+import { error } from "./types/interfaces/errors.js";
+import { currencies } from "./types/enums/currenciesEnum.js";
 export const validateRequest = (req: Request, res: Response, next: any) => {
   function validate(): error | null {
     const { query: userQuery } = req;

@@ -1,9 +1,9 @@
 import express from "express";
 import "dotenv/config.js";
-import { errorHandler } from "./controllers/errorHandler.js";
+import { errorHandler } from "./errorHandler.js";
 import { getExchangeRates, sendCurrencies } from "./controllers/app.js";
 import { updateExchangeRates } from "./cron-ping.js";
-import { validateRequest } from "./controllers/validation.js";
+import { validateRequest } from "./validation.js";
 const { PORT } = process.env;
 
 updateExchangeRates.start();

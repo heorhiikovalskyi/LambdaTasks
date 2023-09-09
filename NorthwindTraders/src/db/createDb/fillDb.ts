@@ -176,5 +176,3 @@ export const fillDb = async () => {
     console.log(err);
   }
 };
-
-fillDb();

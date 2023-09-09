@@ -1,0 +1,21 @@
+CREATE TABLE `clinics` (
+	`id` int AUTO_INCREMENT NOT NULL,
+	`slug` varchar(255),
+	`name` varchar(255),
+	`longName` varchar(255),
+	`suburbSlug` varchar(255),
+	`city` varchar(255),
+	`suburbName` varchar(255),
+	`fullAddress` varchar(255),
+	`pms` varchar(255),
+	`metaTitle` varchar(255),
+	`metaDesc` varchar(255),
+	`typeform` varchar(255),
+	`website` varchar(255),
+	`email` varchar(255),
+	`phone` varchar(255),
+	`about` varchar(1000),
+	`postCode` varchar(10),
+	`state` varchar(20),
+	CONSTRAINT `clinics_id` PRIMARY KEY(`id`)
+);

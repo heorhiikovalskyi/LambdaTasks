@@ -4,12 +4,15 @@ import { EmployeesRepo } from "../repositories/employeesRepo.js";
 import { OrdersRepo } from "../repositories/ordersRepo.js";
 import { ProductsRepo } from "../repositories/productsRepo.js";
 import { SuppliersRepo } from "../repositories/suppliersRepo.js";
+import { OrderDetailsRepo } from "../repositories/orderDetails.js";
+import { orderDetails } from "../db/schema/orderDetails.js";
 
 const customersRepo = CustomersRepo.getInstance();
 const employeesRepo = EmployeesRepo.getInstance();
 const ordersRepo = OrdersRepo.getInstance();
 const productsRepo = ProductsRepo.getInstance();
 const suppliersRepo = SuppliersRepo.getInstance();
+const orderDetailsRepo = OrderDetailsRepo.getInstance();
 
 export class GetDataController {
   private constructor() {}
@@ -120,6 +123,21 @@ export class GetDataController {
       if (id) {
         const supplier = await getSupplier(+id);
         return res.status(200).json(supplier);
+      }
+      return res.sendStatus(400);
+    } catch (err) {
+      next(err);
+    }
+  };
+
+  orderDetails = async (req: Request, res: Response, next: any) => {
+    const { getByOrder } = orderDetailsRepo;
+    try {
+      const { orderId } = req.query;
+
+      if (orderId) {
+        const orderDetails = await getByOrder(+orderId);
+        return res.status(200).json(orderDetails);
       }
       return res.sendStatus(400);
     } catch (err) {

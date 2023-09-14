@@ -17,15 +17,6 @@ export const validateRequest = (req: Request, res: Response, next: any) => {
     if (validationResult !== "all right") {
       return validationResult as error;
     }
-    const { time, currency } = userQuery;
-    let { market } = userQuery;
-    market = market ? market.toLowerCase() : market;
-    if (market && !markets.includes(market)) {
-      return { message: "No such market", code: 400 };
-    }
-    if (market && !currency) {
-      return { message: "Need currency: currency=BTC", code: 400 };
-    }
     return null;
   }
 
@@ -49,12 +40,25 @@ const validateUserInput = (userQuery: UserQuery): string | error => {
       code: 400,
     };
   }
+
   if (!/^\d+(h|m)/.test(time)) {
     return {
       message: "No such time period. Try 45m or 2h for example",
       code: 400,
     };
   }
+
+  let { market } = userQuery;
+  market = market ? market.toLowerCase() : market;
+
+  if (market && !markets.includes(market)) {
+    return { message: "No such market", code: 400 };
+  }
+
+  if (market && !currency) {
+    return { message: "Need currency: currency=BTC", code: 400 };
+  }
+
   return "all right";
 };
 

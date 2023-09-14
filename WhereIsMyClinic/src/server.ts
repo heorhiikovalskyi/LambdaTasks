@@ -2,6 +2,9 @@ import express from "express";
 import "dotenv/config.js";
 import { schema } from "./graphQL/schema.js";
 import { graphqlHTTP } from "express-graphql";
+import { fillDb } from "./db/createDb/fillDb.js";
+
+await fillDb();
 
 interface MyError extends Error {
   thrownValue?: { message: string; code: number };

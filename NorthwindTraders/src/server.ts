@@ -7,13 +7,14 @@ import {
   validateOrders,
   validateProducts,
   validateSuppliers,
+  validateOrderDetails,
 } from "./validation.js";
 import { errorHandler } from "./errorHandler.js";
 import { fillDb } from "./db/createDb/fillDb.js";
 import { createDb } from "./db/createTables.js";
 
 const getDataController = GetDataController.getInstance();
-const { customers, orders, employees, products, suppliers } = getDataController;
+const { customers, orders, employees, products, suppliers, orderDetails } = getDataController;
 
 const { PORT } = process.env;
 
@@ -26,6 +27,7 @@ app.get("/orders", validateOrders, orders);
 app.get("/employees", validateEmployees, employees);
 app.get("/products", validateProducts, products);
 app.get("/suppliers", validateSuppliers, suppliers);
+app.get("/orderDetails", validateOrderDetails, orderDetails);
 
 app.use(errorHandler);
 

@@ -14,8 +14,8 @@ CREATE TABLE `clinics` (
 	`website` varchar(255),
 	`email` varchar(255),
 	`phone` varchar(255),
-	`about` varchar(1000),
-	`postCode` varchar(10),
+	`about` varchar(255),
+	`postCode` varchar(20),
 	`state` varchar(20),
 	CONSTRAINT `clinics_id` PRIMARY KEY(`id`)
 );

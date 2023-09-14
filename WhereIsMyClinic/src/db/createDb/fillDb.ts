@@ -23,7 +23,6 @@ export const fillDb = async () => {
       postCode: e.Postcode,
       state: e.State,
     }));
-
     await db.delete(Clinics);
 
     await db.insert(Clinics).values(clinics);
@@ -31,5 +30,3 @@ export const fillDb = async () => {
     console.log(err);
   }
 };
-
-fillDb();

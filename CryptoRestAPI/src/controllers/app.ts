@@ -17,14 +17,16 @@ const getMinutes = (time: string): number => {
 const getMarketRates = async (res: Response, time: number, market: string, currency: string) => {
   const marketId = markets.indexOf(market) + 1;
   const currencyId = Currencies[currency as keyof typeof Currencies];
-  const marketExchanges = await exchangeRatesRepo.getMarketExchanges(time, marketId, currencyId).catch((err) => {
+  try {
+    const marketExchanges = await exchangeRatesRepo.getMarketExchanges(time, marketId, currencyId);
+    const marketExchangesToView = marketExchanges.map(({ date, conversionToUsd }) => ({
+      date,
+      conversionToUsd,
+    }));
+    res.status(200).json(marketExchangesToView);
+  } catch (err) {
     throw err;
-  });
-  const marketExchangesToView = marketExchanges.map(({ date, conversionToUsd }) => ({
-    date,
-    conversionToUsd,
-  }));
-  res.status(200).json(marketExchangesToView);
+  }
 };
 
 const getAverageRates = async (time: number, currency: string | undefined, res: Response) => {
@@ -53,10 +55,10 @@ export const getExchangeRates = async (req: Request, res: Response, next: any) =
   const minutesTime = getMinutes(time);
   try {
     if (!market) {
-      return getAverageRates(minutesTime, currency, res);
+      return await getAverageRates(minutesTime, currency, res);
     }
     market = market.toLowerCase();
-    return getMarketRates(res, minutesTime, market, currency as string);
+    return await getMarketRates(res, minutesTime, market, currency as string);
   } catch (err) {
     next(err);
   }

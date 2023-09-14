@@ -3,6 +3,7 @@ import { Employee } from "../db/schema/employees.js";
 import { Order } from "../db/schema/orders.js";
 import { Product } from "../db/schema/products.js";
 import { Supplier } from "../db/schema/suppliers.js";
+import { OrderDetail } from "../db/schema/orderDetails";
 
 type Query = {
   sql: string;
@@ -27,3 +28,8 @@ export type ProductsRes = { products: Product[]; query: Query };
 
 export type SuppliersRes = { suppliers: Supplier[]; query: Query };
 export type SupplierRes = { supplier: Supplier; query: Query };
+
+export type OrderDetailsRes = {
+  orderDetails: { orderDetails: OrderDetail; products: Product | null }[];
+  query: Query;
+};

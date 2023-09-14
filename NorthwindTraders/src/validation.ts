@@ -66,3 +66,11 @@ export const validateSuppliers = (req: Request, res: Response, next: any) => {
   }
   next();
 };
+
+export const validateOrderDetails = (req: Request, res: Response, next: any) => {
+  const { orderId } = req.query;
+  if (orderId && isNaN(+orderId)) {
+    return res.sendStatus(400);
+  }
+  next();
+};

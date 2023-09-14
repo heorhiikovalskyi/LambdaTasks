@@ -17,8 +17,8 @@ export const Clinics = mysqlTable("clinics", {
   website: varchar("website", { length: 255 }),
   email: varchar("email", { length: 255 }),
   phone: varchar("phone", { length: 255 }),
-  about: varchar("about", { length: 1000 }),
-  postCode: varchar("postCode", { length: 10 }),
+  about: varchar("about", { length: 255 }),
+  postCode: varchar("postCode", { length: 20 }),
   state: varchar("state", { length: 20 }),
 });
 
